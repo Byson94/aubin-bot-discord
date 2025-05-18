@@ -34,27 +34,5 @@ async def define(interaction: discord.Interaction, word: str):
     else:
         await interaction.response.send_message(f"Could not find a definition for **{word}**.")
 
-@client.tree.command(name="chat", description="Chat with an AI.")
-@app_commands.describe(message="Your message to the AI")
-async def chat(interaction: discord.Interaction, message: str):
-    await interaction.response.defer()
-
-    shapes_client = OpenAI(
-        api_key=os.getenv("CHAT_BOT_KEY"),
-        base_url="https://api.shapes.inc/v1/",
-    )
-
-    try:
-        response = shapes_client.chat.completions.create(
-            model="shapesinc/aubin",
-            messages=[{"role": "user", "content": message}]
-        )
-
-        reply = response.choices[0].message.content
-        await interaction.followup.send(reply)
-
-    except Exception as e:
-        await interaction.followup.send(f"Error talking to AI: `{e}`")
-
 
 client.run(os.getenv("BOT_TOKEN"))
